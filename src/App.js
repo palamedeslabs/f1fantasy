@@ -64,6 +64,115 @@ const TEAM_ABBR = {
 
 const FLAG_MAP = { NL: "🇳🇱", MX: "🇲🇽", GB: "🇬🇧", MC: "🇲🇨", AU: "🇦🇺", IT: "🇮🇹", ES: "🇪🇸", CA: "🇨🇦", DE: "🇩🇪", FI: "🇫🇮", FR: "🇫🇷", JP: "🇯🇵", TH: "🇹🇭", NZ: "🇳🇿", BR: "🇧🇷", AR: "🇦🇷" };
 
+const TeamLogo = ({ team, size = 26 }) => {
+  const s = size;
+  const logos = {
+    "McLaren": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#FF800018"/>
+        {/* Speed arch — McLaren's iconic swoosh */}
+        <path d="M4 19 Q13 5 22 19" stroke="#FF8000" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <line x1="4" y1="19" x2="22" y2="19" stroke="#FF8000" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    ),
+    "Mercedes": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#27F4D218"/>
+        {/* Three-pointed star */}
+        <circle cx="13" cy="13" r="9" stroke="#27F4D2" strokeWidth="1.5"/>
+        <line x1="13" y1="4" x2="13" y2="13" stroke="#27F4D2" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="13" y1="13" x2="6" y2="20" stroke="#27F4D2" strokeWidth="2" strokeLinecap="round"/>
+        <line x1="13" y1="13" x2="20" y2="20" stroke="#27F4D2" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    ),
+    "Ferrari": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#E8002D18"/>
+        {/* Scuderia shield */}
+        <path d="M13 3 L21 7 L21 17 L13 23 L5 17 L5 7 Z" fill="#E8002D" opacity="0.85"/>
+        <rect x="11" y="9" width="4" height="8" fill="#FFD700"/>
+        <rect x="8" y="12" width="10" height="3" fill="#FFD700"/>
+      </svg>
+    ),
+    "Red Bull Racing": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#3671C618"/>
+        {/* Bull horns */}
+        <path d="M5 10 Q4 5 9 5 Q13 5 13 9" stroke="#3671C6" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <path d="M21 10 Q22 5 17 5 Q13 5 13 9" stroke="#CC1800" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <ellipse cx="13" cy="16" rx="6" ry="5" fill="#3671C6" opacity="0.85"/>
+        <circle cx="11" cy="15" r="1.2" fill="#fff" opacity="0.9"/>
+        <circle cx="15" cy="15" r="1.2" fill="#fff" opacity="0.9"/>
+      </svg>
+    ),
+    "Williams": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#64C4FF18"/>
+        {/* W */}
+        <path d="M4 8 L7.5 18 L13 11 L18.5 18 L22 8" stroke="#64C4FF" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+    ),
+    "Aston Martin": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#22997118"/>
+        {/* Wings */}
+        <path d="M2 13 Q7 7 13 13 Q19 19 24 13" stroke="#229971" strokeWidth="2.5" fill="none" strokeLinecap="round"/>
+        <path d="M2 13 Q7 19 13 13 Q19 7 24 13" stroke="#229971" strokeWidth="1.2" fill="none" strokeLinecap="round" opacity="0.45"/>
+        <circle cx="13" cy="13" r="2.5" fill="#229971"/>
+      </svg>
+    ),
+    "Alpine": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#FF87BC18"/>
+        {/* A with alpine peak */}
+        <path d="M13 4 L22 20 H4 Z" stroke="#FF87BC" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+        <line x1="8.5" y1="14.5" x2="17.5" y2="14.5" stroke="#4B91FF" strokeWidth="2" strokeLinecap="round"/>
+      </svg>
+    ),
+    "Haas": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#B6BABD18"/>
+        {/* H */}
+        <line x1="7" y1="7" x2="7" y2="19" stroke="#B6BABD" strokeWidth="2.5" strokeLinecap="round"/>
+        <line x1="19" y1="7" x2="19" y2="19" stroke="#B6BABD" strokeWidth="2.5" strokeLinecap="round"/>
+        <line x1="7" y1="13" x2="19" y2="13" stroke="#B6BABD" strokeWidth="2.5" strokeLinecap="round"/>
+      </svg>
+    ),
+    "Audi": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#C6000018"/>
+        {/* Four rings */}
+        <circle cx="5.5" cy="13" r="3.5" stroke="#C60000" strokeWidth="1.8" fill="none"/>
+        <circle cx="10.5" cy="13" r="3.5" stroke="#C60000" strokeWidth="1.8" fill="none"/>
+        <circle cx="15.5" cy="13" r="3.5" stroke="#C60000" strokeWidth="1.8" fill="none"/>
+        <circle cx="20.5" cy="13" r="3.5" stroke="#C60000" strokeWidth="1.8" fill="none"/>
+      </svg>
+    ),
+    "Racing Bulls": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#6692FF18"/>
+        {/* Bull horns (compact) */}
+        <path d="M6 11 Q5 6 10 6 Q13 6 13 10" stroke="#6692FF" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        <path d="M20 11 Q21 6 16 6 Q13 6 13 10" stroke="#6692FF" strokeWidth="2.2" fill="none" strokeLinecap="round"/>
+        <ellipse cx="13" cy="16" rx="5.5" ry="4.5" fill="#6692FF" opacity="0.82"/>
+        <circle cx="11" cy="15" r="1" fill="#fff" opacity="0.9"/>
+        <circle cx="15" cy="15" r="1" fill="#fff" opacity="0.9"/>
+      </svg>
+    ),
+    "Cadillac": (
+      <svg width={s} height={s} viewBox="0 0 26 26" fill="none">
+        <rect width="26" height="26" rx="4" fill="#CC102018"/>
+        {/* Crest */}
+        <path d="M13 3 L21 7.5 L21 18.5 L13 23 L5 18.5 L5 7.5 Z" stroke="#CC1020" strokeWidth="1.5" fill="#CC102012"/>
+        <line x1="8" y1="10" x2="18" y2="10" stroke="#CC1020" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="8" y1="13" x2="18" y2="13" stroke="#CC1020" strokeWidth="1.5" strokeLinecap="round"/>
+        <line x1="8" y1="16" x2="18" y2="16" stroke="#CC1020" strokeWidth="1.5" strokeLinecap="round"/>
+      </svg>
+    ),
+  };
+  return logos[team] || <svg width={s} height={s} viewBox="0 0 26 26"><rect width="26" height="26" rx="4" fill="#22222220"/></svg>;
+};
+
 // F1 Fantasy 2026 Scoring
 // Race: P1=25, P2=18, P3=15, P4=12, P5=10, P6=8, P7=6, P8=4, P9=2, P10=1
 // Qualifying: P1=10, P2=9, P3=8... P10=1
@@ -578,6 +687,7 @@ export default function F1Fantasy() {
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                             <div style={{ width: 3, height: 44, background: driver.teamColor, borderRadius: 2, flexShrink: 0, boxShadow: selected ? `0 0 6px ${driver.teamColor}88` : "none", transition: "box-shadow 0.2s" }} />
+                            <div style={{ flexShrink: 0 }}><TeamLogo team={driver.team} size={26} /></div>
                             <div style={{ minWidth: 0, flex: 1 }}>
                               <div style={{ fontSize: 10, color: "#666", fontWeight: 600, letterSpacing: 0.3, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 {FLAG_MAP[driver.country]} {driver.name.split(" ")[0]}
