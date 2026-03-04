@@ -508,15 +508,48 @@ export default function F1Fantasy() {
               {driverView === "drivers" && (
                 <>
                   {/* Filters */}
-                  <div style={{ display: "flex", gap: 8, marginBottom: 16, alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: 8, marginBottom: 10, alignItems: "center" }}>
                     <input type="text" placeholder="Search drivers..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
-                    <select value={filterTeam} onChange={e => setFilterTeam(e.target.value)} style={{ width: 120 }}>
-                      {teams.map(t => <option key={t} value={t}>{t === "All" ? "All Teams" : t}</option>)}
-                    </select>
                     <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ width: 110 }}>
                       <option value="price">Price ↓</option>
                       <option value="points">Points ↓</option>
                     </select>
+                  </div>
+
+                  {/* Team filter strip */}
+                  <div style={{ display: "flex", gap: 6, marginBottom: 14, overflowX: "auto", paddingBottom: 4, scrollbarWidth: "none" }}>
+                    <button
+                      onClick={() => setFilterTeam("All")}
+                      style={{
+                        flexShrink: 0, padding: "4px 10px", borderRadius: 4,
+                        background: filterTeam === "All" ? "#e10600" : "#1a1a1a",
+                        border: `1px solid ${filterTeam === "All" ? "#e10600" : "#2a2a2a"}`,
+                        color: filterTeam === "All" ? "#fff" : "#666",
+                        fontSize: 10, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase",
+                        cursor: "pointer", transition: "all 0.15s", fontFamily: "'Barlow Condensed', sans-serif"
+                      }}
+                    >ALL</button>
+                    {CONSTRUCTORS.map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => setFilterTeam(filterTeam === c.name ? "All" : c.name)}
+                        title={c.name}
+                        style={{
+                          flexShrink: 0, display: "flex", alignItems: "center", gap: 5,
+                          padding: "4px 8px", borderRadius: 4,
+                          background: filterTeam === c.name ? c.color + "22" : "#1a1a1a",
+                          border: `1px solid ${filterTeam === c.name ? c.color : "#2a2a2a"}`,
+                          cursor: "pointer", transition: "all 0.15s",
+                        }}
+                      >
+                        <div style={{ width: 8, height: 8, borderRadius: "50%", background: c.color, flexShrink: 0 }} />
+                        <span style={{
+                          fontSize: 10, fontWeight: 800, letterSpacing: 0.8, textTransform: "uppercase",
+                          color: filterTeam === c.name ? c.color : "#555",
+                          fontFamily: "'Barlow Condensed', sans-serif"
+                        }}>{TEAM_ABBR[c.name]}</span>
+                      </button>
+                    ))}
                   </div>
 
                   {/* Column headers */}
