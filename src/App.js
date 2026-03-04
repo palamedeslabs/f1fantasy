@@ -554,12 +554,16 @@ export default function F1Fantasy() {
                               userSelect: "none",
                               pointerEvents: "none",
                               whiteSpace: "nowrap",
+                              zIndex: 0,
                             }}>
                               {TEAM_ABBR[driver.team]}
                             </div>
-                            <div style={{ minWidth: 0 }}>
-                              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 14, letterSpacing: 0.5, lineHeight: 1.3, position: "relative" }}>
-                                {FLAG_MAP[driver.country]} {driver.name}
+                            <div style={{ minWidth: 0, position: "relative", zIndex: 1, overflow: "hidden" }}>
+                              <div style={{ fontSize: 10, color: "#999", fontWeight: 600, letterSpacing: 0.5, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {FLAG_MAP[driver.country]} {driver.name.split(" ")[0]}
+                              </div>
+                              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 15, letterSpacing: 0.5, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {driver.name.split(" ").slice(1).join(" ")}
                               </div>
                               <div style={{ fontSize: 10, color: driver.teamColor, opacity: 0.6, marginTop: 1, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", position: "relative" }}>
                                 #{driver.number}
