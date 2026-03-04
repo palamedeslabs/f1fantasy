@@ -508,14 +508,14 @@ export default function F1Fantasy() {
               {driverView === "drivers" && (
                 <>
                   {/* Filters */}
-                  <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-                    <input type="text" placeholder="Search drivers..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ flex: 1, minWidth: 160 }} />
-                    <select value={filterTeam} onChange={e => setFilterTeam(e.target.value)}>
-                      {teams.map(t => <option key={t} value={t}>{t}</option>)}
+                  <div style={{ display: "flex", gap: 8, marginBottom: 16, alignItems: "center" }}>
+                    <input type="text" placeholder="Search drivers..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} style={{ flex: 1, minWidth: 0 }} />
+                    <select value={filterTeam} onChange={e => setFilterTeam(e.target.value)} style={{ width: 120 }}>
+                      {teams.map(t => <option key={t} value={t}>{t === "All" ? "All Teams" : t}</option>)}
                     </select>
-                    <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-                      <option value="price">Sort: Price ↓</option>
-                      <option value="points">Sort: F. Points ↓</option>
+                    <select value={sortBy} onChange={e => setSortBy(e.target.value)} style={{ width: 110 }}>
+                      <option value="price">Price ↓</option>
+                      <option value="points">Points ↓</option>
                     </select>
                   </div>
 
@@ -535,51 +535,38 @@ export default function F1Fantasy() {
                       return (
                         <div
                           key={driver.id}
-                          className={`driver-card ${selected ? "selected" : ""} ${disabled ? "disabled" : ""}`}
+                          className={`driver-card ${disabled ? "disabled" : ""}`}
                           onClick={() => !disabled && toggleDriver(driver)}
-                          style={{ display: "flex", alignItems: "center", gap: 12, padding: "14px 12px" }}
+                          style={{
+                            display: "flex", alignItems: "center", gap: 12, padding: "11px 12px",
+                            borderColor: selected ? driver.teamColor + "99" : "#1e1e1e",
+                            background: selected ? driver.teamColor + "12" : "#161616",
+                          }}
                         >
-                          <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1, minWidth: 0, overflow: "hidden", position: "relative" }}>
-                            <div style={{ width: 3, height: 40, background: driver.teamColor, borderRadius: 2, flexShrink: 0 }} />
-                            {/* Team abbreviation watermark — anchored to right of the whole name area */}
-                            <div style={{
-                              position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)",
-                              fontFamily: "'Barlow Condensed', sans-serif",
-                              fontWeight: 900,
-                              fontSize: 32,
-                              color: driver.teamColor,
-                              opacity: 0.22,
-                              letterSpacing: -1,
-                              lineHeight: 1,
-                              userSelect: "none",
-                              pointerEvents: "none",
-                              whiteSpace: "nowrap",
-                              zIndex: 0,
-                            }}>
-                              {TEAM_ABBR[driver.team]}
-                            </div>
-                            <div style={{ minWidth: 0, position: "relative", zIndex: 1, overflow: "hidden" }}>
-                              <div style={{ fontSize: 10, color: "#999", fontWeight: 600, letterSpacing: 0.5, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
+                            <div style={{ width: 3, height: 44, background: driver.teamColor, borderRadius: 2, flexShrink: 0, boxShadow: selected ? `0 0 6px ${driver.teamColor}88` : "none", transition: "box-shadow 0.2s" }} />
+                            <div style={{ minWidth: 0, flex: 1 }}>
+                              <div style={{ fontSize: 10, color: "#666", fontWeight: 600, letterSpacing: 0.3, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 {FLAG_MAP[driver.country]} {driver.name.split(" ")[0]}
                               </div>
-                              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 15, letterSpacing: 0.5, lineHeight: 1.2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                              <div style={{ fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 800, fontSize: 16, letterSpacing: 0.3, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 {driver.name.split(" ").slice(1).join(" ")}
                               </div>
-                              <div style={{ fontSize: 10, color: driver.teamColor, opacity: 0.6, marginTop: 1, fontWeight: 700, letterSpacing: 0.5, textTransform: "uppercase", position: "relative" }}>
-                                #{driver.number}
+                              <div style={{ marginTop: 3, display: "inline-block", fontSize: 9, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: driver.teamColor, background: driver.teamColor + "20", padding: "1px 5px", borderRadius: 2 }}>
+                                {TEAM_ABBR[driver.team]}
                               </div>
                             </div>
                           </div>
-                          <div style={{ width: 1, height: 30, background: "#2a2a2a", flexShrink: 0, marginLeft: 4 }} />
-                          <div style={{ width: 44, textAlign: "center", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, flexShrink: 0 }}>{driver.fantasyPoints}</div>
+                          <div style={{ width: 44, textAlign: "center", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, flexShrink: 0, color: selected ? "#fff" : "#888" }}>{driver.fantasyPoints}</div>
                           <div style={{ width: 52, textAlign: "center", fontFamily: "'Barlow Condensed', sans-serif", fontWeight: 700, fontSize: 13, color: "#0fd679", flexShrink: 0 }}>${driver.price}M</div>
                           <div style={{ width: 32, flexShrink: 0, display: "flex", justifyContent: "center" }}>
                             <div style={{
-                              width: 28, height: 28, borderRadius: 4,
-                              background: selected ? "#e10600" : "#222",
-                              border: `2px solid ${selected ? "#e10600" : "#333"}`,
+                              width: 26, height: 26, borderRadius: "50%",
+                              background: selected ? driver.teamColor : "transparent",
+                              border: `2px solid ${selected ? driver.teamColor : "#333"}`,
                               display: "flex", alignItems: "center", justifyContent: "center",
-                              fontSize: 14, transition: "all 0.15s"
+                              fontSize: 11, transition: "all 0.15s", fontWeight: 800,
+                              color: selected ? "#fff" : "#555"
                             }}>
                               {selected ? "✓" : "+"}
                             </div>
@@ -677,8 +664,13 @@ export default function F1Fantasy() {
                                 </div>
                               </div>
                             ) : (
-                              <div style={{ color: "#2a2a2a", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>
-                                + Add Driver {i + 1}
+                              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                <div style={{ width: 22, height: 22, borderRadius: "50%", border: "1px solid #272727", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "#2e2e2e", fontWeight: 800, fontFamily: "'Barlow Condensed', sans-serif", flexShrink: 0 }}>
+                                  {i + 1}
+                                </div>
+                                <div style={{ color: "#2a2a2a", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>
+                                  Add Driver
+                                </div>
                               </div>
                             )}
                           </div>
@@ -703,7 +695,10 @@ export default function F1Fantasy() {
                           <button onClick={() => setSelectedConstructor(null)} style={{ background: "#1e1e1e", border: "1px solid #333", borderRadius: 4, padding: "4px 8px", cursor: "pointer", fontSize: 12, color: "#888" }}>✕</button>
                         </div>
                       ) : (
-                        <div style={{ color: "#2a2a2a", fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase" }}>+ Add Constructor</div>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <div style={{ width: 22, height: 22, borderRadius: "50%", border: "1px solid #272727", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, color: "#2e2e2e", flexShrink: 0 }}>⚙</div>
+                          <div style={{ color: "#2a2a2a", fontSize: 11, fontWeight: 700, letterSpacing: 1.5, textTransform: "uppercase" }}>Add Constructor</div>
+                        </div>
                       )}
                     </div>
                   </div>
