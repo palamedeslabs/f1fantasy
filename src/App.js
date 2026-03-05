@@ -743,8 +743,8 @@ function F1Fantasy({ user }) {
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 10, flex: 1, minWidth: 0 }}>
                             <div style={{ width: 3, height: 44, background: driver.teamColor, borderRadius: 2, flexShrink: 0, boxShadow: selected ? `0 0 6px ${driver.teamColor}88` : "none", transition: "box-shadow 0.2s" }} />
-                            <div style={{ flexShrink: 0, width: 44, height: 44, borderRadius: 6, overflow: "hidden", border: `1px solid ${driver.teamColor}44`, background: "#111" }}>
-                              <img src={`/drivers/driver-${driver.id}.png`} alt={driver.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                            <div style={{ flexShrink: 0, width: 48, height: 48 }}>
+                              <img src={`/drivers/driver-${driver.id}.png`} alt={driver.name} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
                             </div>
                             <div style={{ minWidth: 0, flex: 1 }}>
                               <div style={{ fontSize: 10, color: "#666", fontWeight: 600, letterSpacing: 0.3, lineHeight: 1.3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
