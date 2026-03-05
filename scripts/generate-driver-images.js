@@ -88,12 +88,7 @@ async function main() {
     const filename = `driver-${driver.id}.png`;
     const filepath = path.join(OUTPUT_DIR, filename);
 
-    if (fs.existsSync(filepath)) {
-      console.log(`⏭  Skipping ${driver.name} (already exists)`);
-      continue;
-    }
-
-    const prompt = `Formula 1 racing driver portrait illustration, ${driver.name}, ${driver.team} F1 team colors (${driver.color}), wearing racing helmet and fireproof suit, dramatic studio lighting, dark background, highly stylized graphic art style, bold colors, clean modern design, no text, square composition`;
+    const prompt = `Formula 1 racing driver portrait illustration, ${driver.name}, ${driver.team} F1 team colors (${driver.color}), no helmet, face visible, wearing fireproof racing suit collar, confident expression, dramatic studio lighting, plain white background, highly stylized graphic art style, bold colors, clean modern design, no text, square composition, headshot`;
 
     try {
       console.log(`🎨 Generating ${driver.name} (${driver.team})...`);
