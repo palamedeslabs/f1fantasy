@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { supabase } from "./supabaseClient";
+import AuthPage from "./AuthPage";
 
 const DRIVERS = [
   { id: 1,  name: "Lando Norris",       team: "McLaren",         number: 1,  price: 27.2, fantasyPoints: 0, country: "GB", teamColor: "#FF8000" },
@@ -245,7 +247,25 @@ async function fetchOpenF1ViaAI(prompt) {
 const BUDGET = 100.0;
 const MAX_DRIVERS = 5;
 
-export default function F1Fantasy() {
+export default function App() {
+  const [session, setSession] = useState(undefined);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (session === undefined) return null;
+  if (!session) return <AuthPage />;
+  return <F1Fantasy user={session.user} />;
+}
+
+function F1Fantasy({ user }) {
   const [activeTab, setActiveTab] = useState("team");
   const [selectedDrivers, setSelectedDrivers] = useState([]);
   const [selectedConstructor, setSelectedConstructor] = useState(null);
@@ -259,6 +279,36 @@ export default function F1Fantasy() {
   const [syncStatus, setSyncStatus] = useState(null); // null | "loading" | "success" | "error"
   const [lastSynced, setLastSynced] = useState(null);
   const [raceLog, setRaceLog] = useState([]);
+
+  // Load saved team on mount
+  useEffect(() => {
+    if (!user) return;
+    supabase
+      .from('teams')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
+      .then(({ data }) => {
+        if (!data) return;
+        if (data.driver_ids) setSelectedDrivers(DRIVERS.filter(d => data.driver_ids.includes(d.id)));
+        if (data.constructor_id) setSelectedConstructor(CONSTRUCTORS.find(c => c.id === data.constructor_id) || null);
+        if (data.captain_id) setCaptain(DRIVERS.find(d => d.id === data.captain_id) || null);
+      });
+  }, [user]);
+
+  async function saveTeam() {
+    const { error } = await supabase
+      .from('teams')
+      .upsert({
+        user_id: user.id,
+        driver_ids: selectedDrivers.map(d => d.id),
+        constructor_id: selectedConstructor?.id || null,
+        captain_id: captain?.id || null,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id' });
+    if (error) alert('Failed to save: ' + error.message);
+    else alert('Team saved! 🏁');
+  }
 
   async function syncResults() {
     setSyncStatus("loading");
@@ -548,8 +598,14 @@ export default function F1Fantasy() {
                 <div style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>Total Pts</div>
                 <div style={{ fontSize: 18, fontWeight: 800, fontFamily: "'Barlow Condensed', sans-serif", color: "#e10600" }}>{totalPoints.toLocaleString()}</div>
               </div>
-              <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#222", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #333" }}>
-                <span style={{ fontSize: 14 }}>👤</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 11, color: "#888", maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</span>
+                <button
+                  onClick={() => supabase.auth.signOut()}
+                  style={{ background: "none", border: "1px solid #333", borderRadius: 4, color: "#888", fontSize: 11, padding: "4px 10px", cursor: "pointer", whiteSpace: "nowrap" }}
+                >
+                  Sign Out
+                </button>
               </div>
             </div>
           </div>
@@ -591,7 +647,7 @@ export default function F1Fantasy() {
             <button
               className="btn-primary"
               disabled={selectedDrivers.length < MAX_DRIVERS || !selectedConstructor || !captain}
-              onClick={() => alert("Team saved! 🏁")}
+              onClick={saveTeam}
             >
               Save Team
             </button>
